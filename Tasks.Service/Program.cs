@@ -2,8 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Users.Service.Database;
-using Users.Service.Services;
+using Tasks.Service.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +20,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!)),
         };
     });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
@@ -29,9 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-builder.Services.AddDbContext<ApplicationContext>(opt =>
-    opt.UseNpgsql(connectionString));
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddDbContext<ApplicationContext>(x => x.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
@@ -42,10 +40,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseHttpsRedirection();
 
 app.MapControllers();
 
