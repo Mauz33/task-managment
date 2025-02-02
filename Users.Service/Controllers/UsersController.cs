@@ -59,11 +59,36 @@ public class UsersController : ControllerBase
     }
     
     [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetUser([FromQuery] int Id)
+    {
+        var user = _context.Users
+            .FirstOrDefault(x => x.Id == Id);
+        if (user is null)
+        {
+            return NotFound($"User with id {Id} not found");
+        }
+
+        return Ok(user);
+    }
+    
+    [Authorize]
+    [HttpGet("DoesExistsById")]
+    public async Task<IActionResult> DoesExistsById([FromQuery] int Id)
+    {
+        var exists = _context.Users.Any(x => x.Id == Id);
+        
+        return Ok(exists);
+    }
+    
+    [Authorize]
     [HttpGet("some")]
     public async Task<IActionResult> Some()
     {
         return Ok(12);
     }
+    
+    
 }
 
 public record RegistrationDto(string Login, string Password);

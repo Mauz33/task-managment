@@ -9,7 +9,9 @@ public class TaskModel
     public DateTime DateDeadline { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public TaskStatuses TaskStatuses { get; set; }
+    public TaskStatuses TaskStatusId { get; set; }
+
+    public TaskStatus TaskStatus { get; set; }
 }
 
 public class TaskStatus
