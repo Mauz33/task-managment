@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Tasks.Service.Database;
+using Tasks.Service.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!)),
         };
     });
+
+var b = new Receive();
+var a = new Send();
+
+b.Consume();
+a.Produce();
 
 builder.Services.AddAuthorization();
 
@@ -51,3 +58,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
